@@ -17,6 +17,7 @@ export default function Assistant() {
     addMessage,
     deleteConversation,
     setCurrentConversation,
+    resetConfig,
   } = useAppStore();
 
   const [input, setInput] = useState('');
@@ -244,6 +245,17 @@ export default function Assistant() {
                   className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition-colors"
                 >
                   保存设置
+                </button>
+                <button
+                  onClick={() => {
+                    resetConfig();
+                    setTempApiKey('');
+                    setTempBaseUrl('http://localhost:8000');
+                    setTempModelName('local-model');
+                  }}
+                  className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                >
+                  使用本地服务器
                 </button>
                 <button
                   onClick={() => setShowSettings(false)}

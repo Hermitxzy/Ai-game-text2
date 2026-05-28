@@ -29,6 +29,7 @@ interface AppState {
   addMessage: (conversationId: string, message: Omit<Message, 'id' | 'timestamp'>) => void;
   deleteConversation: (conversationId: string) => void;
   setCurrentConversation: (conversationId: string | null) => void;
+  resetConfig: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -99,6 +100,11 @@ export const useAppStore = create<AppState>()(
       },
 
       setCurrentConversation: (conversationId) => set({ currentConversationId: conversationId }),
+      resetConfig: () => set({ 
+        apiKey: '', 
+        baseUrl: 'http://localhost:8000', 
+        modelName: 'local-model' 
+      }),
     }),
     {
       name: 'st-assistant-storage',

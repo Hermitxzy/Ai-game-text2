@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>测试AI服务器连接</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a2e; color: white; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #3b82f6; border: none; color: white; border-radius: 8px; }
+    button:hover { background: #2563eb; }
+    #result { margin-top: 20px; padding: 15px; background: #16213e; border-radius: 8px; }
+    .success { color: #22c55e; }
+    .error { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>测试AI服务器连接</h1>
+  <button onclick="testConnection()">测试连接</button>
+  <div id="result"></div>
+
+  <script>
+    async function testConnection() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p class="success">正在连接...</p>';
+      
+      try {
+        const response = await fetch('http://localhost:8000/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'test',
+            messages: [{ role: 'user', content: '测试连接' }],
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP错误: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        resultDiv.innerHTML = `<p class="success">✓ 连接成功！</p><p>响应: ${data.choices[0].message.content.slice(0, 200)}...</p>`;
+      } catch (error) {
+        resultDiv.innerHTML = `<p class="error">✗ 连接失败: ${error.message}</p>`;
+        console.error('详细错误:', error);
+      }
+    }
+  </script>
+</body>
+</html>
