@@ -1,11 +1,13 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <title>ST语言助手 - 简单测试</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ST语言助手 - 测试版</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; color: white; }
+    body { font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; color: white; }
     .container { max-width: 800px; margin: 0 auto; padding: 20px; }
     .header { text-align: center; margin-bottom: 30px; }
     .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #3b82f6, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -23,14 +25,14 @@
     .error { color: #ef4444; }
     .success { color: #22c55e; }
     pre { background: #1e293b; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
-    code { font-family: 'Fira Code', monospace; }
+    code { font-family: 'Fira Code', 'Consolas', monospace; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>ST语言编程助手</h1>
-      <p style="color: #9ca3af; margin-top: 10px;">纯HTML测试版本 - 无需配置</p>
+      <p style="color: #9ca3af; margin-top: 10px;">测试版本</p>
     </div>
     
     <div class="chat-box" id="chatBox">
@@ -58,7 +60,6 @@
       const message = document.createElement('div');
       message.className = isUser ? 'message user-message' : 'message assistant-message';
       
-      // 简单解析代码块
       const codeBlockRegex = /```(\w+)?\s*([\s\S]*?)```/g;
       let result = '';
       let lastIndex = 0;
@@ -66,7 +67,7 @@
       
       while ((match = codeBlockRegex.exec(content)) !== null) {
         result += escapeHtml(content.slice(lastIndex, match.index));
-        result += `<pre><code>${escapeHtml(match[2] || match[0])}</code></pre>`;
+        result += '<pre><code>' + escapeHtml(match[2] || match[0]) + '</code></pre>';
         lastIndex = match.index + match[0].length;
       }
       result += escapeHtml(content.slice(lastIndex));
@@ -94,19 +95,24 @@
       addMessage(content, true);
 
       try {
+        console.log('正在发送请求到:', API_URL);
         const response = await fetch(API_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
           },
           body: JSON.stringify({
             model: 'local-model',
             messages: [{ role: 'user', content: content }],
           }),
+          mode: 'cors'
         });
 
+        console.log('响应状态:', response.status);
+        
         if (!response.ok) {
-          throw new Error(`HTTP错误: ${response.status}`);
+          throw new Error('HTTP错误: ' + response.status);
         }
 
         const data = await response.json();
@@ -114,10 +120,10 @@
         status.textContent = '✓ 连接成功';
         status.className = 'success';
       } catch (error) {
-        addMessage(`抱歉，发生了错误: ${error.message}`, false);
-        status.textContent = `✗ 错误: ${error.message}`;
+        console.error('错误详情:', error);
+        addMessage('抱歉，发生了错误: ' + error.message, false);
+        status.textContent = '✗ 错误: ' + error.message;
         status.className = 'error';
-        console.error('详细错误:', error);
       } finally {
         sendBtn.disabled = false;
       }

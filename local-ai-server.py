@@ -11,7 +11,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -108,20 +108,11 @@ END_FUNCTION_BLOCK
 
 ```st
 VAR
-    // 布尔类型
     bFlag : BOOL := TRUE;
-    
-    // 整数类型
     nIntValue : INT := 100;
     nDIntValue : DINT := 100000;
-    
-    // 实数类型
     rRealValue : REAL := 3.14;
-    
-    // 字符串类型
     sText : STRING[50] := 'Hello';
-    
-    // 时间类型
     tDelay : TIME := T#5S;
 END_VAR
 ```""",
@@ -130,13 +121,13 @@ END_VAR
 
 ```st
 CASE nState OF
-    0: // 待机状态
+    0: 
         bMotor := FALSE;
-    1: // 运行状态
+    1: 
         bMotor := TRUE;
-    2: // 停止状态
+    2: 
         bMotor := FALSE;
-    ELSE // 默认
+    ELSE 
         bMotor := FALSE;
 END_CASE;
 ```""",
@@ -150,13 +141,7 @@ END_CASE;
 
 **你问的问题是:** {messages[-1].content}
 
-**基本概念:**
-
-ST语言（Structured Text）是符合IEC 61131-3标准的高级PLC编程语言。它的主要特点包括：
-
-1. **结构化编程** - 支持IF-ELSE、CASE、FOR、WHILE等控制结构
-2. **强类型** - 严格的变量类型检查
-3. **功能块** - 支持FUNCTION_BLOCK实现有状态的逻辑
+ST语言（Structured Text）是符合IEC 61131-3标准的高级PLC编程语言。
 
 **示例代码:**
 
@@ -173,7 +158,11 @@ END_IF;
 END_PROGRAM
 ```
 
-如果你有具体的问题，请告诉我，我可以提供更详细的解答！"""
+如需了解更多，请告诉我！"""
+
+@app.options("/chat/completions")
+async def options_chat():
+    return {"status": "ok"}
 
 @app.post("/chat/completions", response_model=ChatResponse)
 async def chat_completions(request: ChatRequest):
