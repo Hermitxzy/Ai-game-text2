@@ -37,7 +37,7 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       currentPage: 'home',
       apiKey: '',
-      baseUrl: 'http://localhost:8000',
+      baseUrl: 'http://127.0.0.1:8000',
       modelName: 'local-model',
       conversations: [],
       currentConversationId: null,
@@ -102,7 +102,7 @@ export const useAppStore = create<AppState>()(
       setCurrentConversation: (conversationId) => set({ currentConversationId: conversationId }),
       resetConfig: () => set({ 
         apiKey: '', 
-        baseUrl: 'http://localhost:8000', 
+        baseUrl: 'http://127.0.0.1:8000', 
         modelName: 'local-model' 
       }),
     }),

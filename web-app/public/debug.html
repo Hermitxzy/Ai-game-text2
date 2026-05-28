@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>调试页面</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a2e; color: white; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #3b82f6; border: none; color: white; border-radius: 8px; margin: 5px; }
+    button:hover { background: #2563eb; }
+    #result { margin-top: 20px; padding: 15px; background: #16213e; border-radius: 8px; min-height: 100px; }
+    .success { color: #22c55e; }
+    .error { color: #ef4444; }
+    .info { color: #3b82f6; }
+  </style>
+</head>
+<body>
+  <h1>调试AI服务器连接</h1>
+  
+  <button onclick="testLocalhost()">测试 localhost:8000</button>
+  <button onclick="test127()">测试 127.0.0.1:8000</button>
+  
+  <div id="result"></div>
+
+  <script>
+    async function testConnection(url) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `<p class="info">正在连接 ${url}...</p>`;
+      
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'test',
+            messages: [{ role: 'user', content: '测试连接' }],
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP错误: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        resultDiv.innerHTML = `<p class="success">✓ 连接成功！</p><p>响应长度: ${data.choices[0].message.content.length} 字符</p>`;
+      } catch (error) {
+        resultDiv.innerHTML = `<p class="error">✗ 连接失败: ${error.message}</p>`;
+        console.error('详细错误:', error);
+      }
+    }
+    
+    function testLocalhost() {
+      testConnection('http://localhost:8000/chat/completions');
+    }
+    
+    function test127() {
+      testConnection('http://127.0.0.1:8000/chat/completions');
+    }
+  </script>
+</body>
+</html>

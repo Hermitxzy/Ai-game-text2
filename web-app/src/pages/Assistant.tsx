@@ -250,7 +250,7 @@ export default function Assistant() {
                   onClick={() => {
                     resetConfig();
                     setTempApiKey('');
-                    setTempBaseUrl('http://localhost:8000');
+                    setTempBaseUrl('http://127.0.0.1:8000');
                     setTempModelName('local-model');
                   }}
                   className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-medium transition-colors"
