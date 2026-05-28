@@ -54,14 +54,6 @@ export default function Assistant() {
     setInput('');
     addMessage(convId, { role: 'user', content: userMessage });
 
-    if (!apiKey) {
-      addMessage(convId, {
-        role: 'assistant',
-        content: '请先在设置中配置你的OpenAI API Key后再使用AI助手功能。',
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
@@ -72,12 +64,16 @@ export default function Assistant() {
         { role: 'user', content: userMessage },
       ];
 
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (apiKey) {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+      }
+
       const response = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
+        headers,
         body: JSON.stringify({
           model: modelName,
           messages,
@@ -271,13 +267,11 @@ export default function Assistant() {
               <p className="text-gray-400 mb-6 max-w-md">
                 问我任何关于ST语言编程的问题，我会帮助你解答并提供代码示例。
               </p>
-              {!apiKey && (
-                <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-4 max-w-md">
-                  <p className="text-orange-300 text-sm">
-                    请先点击右上角的设置按钮配置你的OpenAI API Key。
-                  </p>
-                </div>
-              )}
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 max-w-md">
+                <p className="text-blue-300 text-sm">
+                  默认使用本地AI服务器。如需使用OpenAI，请点击右上角设置配置API Key。
+                </p>
+              </div>
             </div>
           ) : (
             <div className="max-w-4xl mx-auto space-y-6">

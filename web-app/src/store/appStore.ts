@@ -36,8 +36,8 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       currentPage: 'home',
       apiKey: '',
-      baseUrl: 'https://api.openai.com/v1',
-      modelName: 'gpt-4o',
+      baseUrl: 'http://localhost:8000',
+      modelName: 'local-model',
       conversations: [],
       currentConversationId: null,
 
